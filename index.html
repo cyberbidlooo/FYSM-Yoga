@@ -46,6 +46,7 @@ textarea{width:100%;min-height:100px;border:1px solid var(--l);background:var(--
 .x{border:0;background:none;color:#999;font-size:22px;padding:4px 6px}
 .lk{display:block;margin:18px auto 0;background:none;border:0;color:var(--mu);font:inherit;font-size:14px;padding:8px}
 .lk.d{color:#d6503f}
+.big:disabled{opacity:1}input:disabled,textarea:disabled{opacity:1;-webkit-text-fill-color:currentColor}
 .empty{color:var(--mu);text-align:center;padding:48px 10px}
 #m{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}
 #m>div{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 16px calc(var(--sab) + 16px);max-height:85%;overflow:auto}
@@ -81,12 +82,12 @@ $('#m').onclick=e=>{if(e.target.id==='m')closeM()};
 function sync(){if(!dr)return;const g=i=>{const e=document.getElementById(i);return e?e.value:undefined};
  if(scr.n==='student'){['name','phone','start','end','total','done','note'].forEach(k=>{const v=g('f-'+k);if(v!==undefined)dr[k]=v})}
  if(scr.n==='workout'){const v=g('f-name');if(v!==undefined)dr.name=v;const d=g('f-date');if(d)dr.date=d}}
-function go(n,id){scr={n,id};dr=null;
+function go(n,id){scr={n,id,edit:!id};dr=null;
  if(n==='student'){const s=id&&st(id);dr=s?{...s}:{name:'',phone:'',start:today(),end:'',total:'',done:0,note:'',photo:''}}
  if(n==='workout'){const w=id&&D.workouts.find(x=>x.id===id);dr=w?{...w,ids:[...w.ids],orig:[...w.ids]}:{date:today(),name:'',ids:[],orig:[]}}
  render();scrollTo(0,0)}
 function render(){
- const n=scr.n,sub=n==='student'||n==='workout',M=$('#main'),F=$('#foot');
+ const n=scr.n,sub=n==='student'||n==='workout',M=$('#main'),F=$('#foot'),ro=!scr.edit,da=ro?' disabled':'';
  $('#bk').hidden=!sub;let h='',f='';
  const tabs=a=>'<div class="two"><button class="btn tb s '+(a==='s'?'on':'')+'" data-go="students">Ученики</button><button class="btn tb w '+(a==='w'?'on':'')+'" data-go="workouts">Тренировки</button></div>';
  if(n==='students'){
@@ -98,17 +99,17 @@ function render(){
   f='<button class="btn" data-go="newworkout"><span style="font-size:24px">⊕</span>Новая тренировка</button>'+tabs('w')}
  if(n==='student'){
   const isNew=!scr.id,r=Math.max(0,(+dr.total||0)-(+dr.done||0));
-  h='<button class="big" id="ph">'+(dr.photo?'<img src="'+dr.photo+'" alt="">':SIL)+'</button><input class="line" id="f-name" placeholder="Имя" value="'+esc(dr.name)+'" autocomplete="off"><input class="line" id="f-phone" type="tel" placeholder="Номер телефона" value="'+esc(dr.phone)+'">'
-  +'<label class="row">Открыт<input id="f-start" type="date" value="'+esc(dr.start)+'"></label><label class="row">Заканчивается<input id="f-end" type="date" value="'+esc(dr.end)+'"></label><label class="row">Кол-во тренировок в абонементе<input id="f-total" type="number" inputmode="numeric" min="0" value="'+esc(dr.total)+'"></label>'
-  +(isNew?'':'<div class="row bl">Осталось<span id="r-rem">'+r+'</span></div><div class="row or">Пройдено<input id="f-done" type="number" inputmode="numeric" min="0" value="'+esc(dr.done)+'"></div>')
-  +'<textarea id="f-note" placeholder="Место для заметок">'+esc(dr.note)+'</textarea>'+(isNew?'':'<button class="lk d" id="sdel">Удалить ученика</button>');
-  f='<div class="two" style="margin:0"><button class="btn sv" id="ok">Сохранить</button><button class="btn out" id="cx">Отменить</button></div>'}
+  h='<button class="big" id="ph"'+da+'>'+(dr.photo?'<img src="'+dr.photo+'" alt="">':SIL)+'</button><input class="line" id="f-name" placeholder="Имя" value="'+esc(dr.name)+'" autocomplete="off"'+da+'><input class="line" id="f-phone" type="tel" placeholder="Номер телефона" value="'+esc(dr.phone)+'"'+da+'>'
+  +'<label class="row">Открыт<input id="f-start" type="date" value="'+esc(dr.start)+'"'+da+'></label><label class="row">Заканчивается<input id="f-end" type="date" value="'+esc(dr.end)+'"'+da+'></label><label class="row">Кол-во тренировок в абонементе<input id="f-total" type="number" inputmode="numeric" min="0" value="'+esc(dr.total)+'"'+da+'></label>'
+  +(isNew?'':'<div class="row bl">Осталось<span id="r-rem">'+r+'</span></div><div class="row or">Пройдено<input id="f-done" type="number" inputmode="numeric" min="0" value="'+esc(dr.done)+'"'+da+'></div>')
+  +'<textarea id="f-note" placeholder="Место для заметок"'+da+'>'+esc(dr.note)+'</textarea>'+(isNew||ro?'':'<button class="lk d" id="sdel">Удалить ученика</button>');
+  f=ro?'<button class="btn" id="ed">Редактировать</button>':'<div class="two" style="margin:0"><button class="btn sv" id="ok">Сохранить</button><button class="btn out" id="cx">Отменить</button></div>'}
  if(n==='workout'){
   const isNew=!scr.id;
-  h='<label class="pill'+(isNew?'':' old')+'">'+fmt(dr.date)+'<input id="f-date" type="date" value="'+dr.date+'"></label><input class="line" id="f-name" style="font-size:16px" placeholder="Название тренировки" value="'+esc(dr.name)+'" autocomplete="off">'
-  +dr.ids.map(i=>{const s=st(i);return s?'<div class="tile">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div><button class="x" data-rm="'+i+'">✕</button></div>':''}).join('')
-  +'<button class="plus" id="add">+</button>'+(isNew?'':'<button class="lk d" id="wdel">Удалить тренировку</button>');
-  f='<button class="btn" id="ok">'+(isNew?'Начать':'Сохранить')+'</button><div class="two"><button class="btn out" id="cx">Отменить</button></div>'}
+  h='<label class="pill'+(isNew?'':' old')+'">'+fmt(dr.date)+(ro?'':'<input id="f-date" type="date" value="'+dr.date+'">')+'</label><input class="line" id="f-name" style="font-size:16px" placeholder="Название тренировки" value="'+esc(dr.name)+'" autocomplete="off"'+da+'>'
+  +dr.ids.map(i=>{const s=st(i);return s?'<div class="tile">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div>'+(ro?'':'<button class="x" data-rm="'+i+'">✕</button>')+'</div>':''}).join('')
+  +(ro?'':'<button class="plus" id="add">+</button>'+(isNew?'':'<button class="lk d" id="wdel">Удалить тренировку</button>'));
+  f=ro?'<button class="btn" id="ed">Редактировать</button>':'<button class="btn" id="ok">'+(isNew?'Начать':'Сохранить')+'</button><div class="two"><button class="btn out" id="cx">Отменить</button></div>'}
  M.innerHTML=h;F.innerHTML='<div>'+f+'</div>'}
 function pick(){sync();const free=D.students.filter(s=>!dr.ids.includes(s.id));
  if(!free.length){toast(D.students.length?'Все ученики уже добавлены':'Сначала добавьте учеников');return}
@@ -119,7 +120,7 @@ function pick(){sync();const free=D.students.filter(s=>!dr.ids.includes(s.id));
 function saveStudent(){sync();if(!dr.name.trim()){toast('Введите имя ученика');return}
  const v={...dr,name:dr.name.trim(),phone:dr.phone.trim(),total:+dr.total||0,done:+dr.done||0};
  if(scr.id)Object.assign(st(scr.id),v);else D.students.push({id:uid(),...v});
- save();go('students')}
+ save();scr.id?go('student',scr.id):go('students')}
 function startWorkout(){sync();
  if(!dr.ids.length){toast('Добавьте хотя бы одного ученика');return}
  const out=[];dr.ids.forEach(i=>{const s=st(i);if(s){if(rem(s)<=0)out.push(s.name);s.done=(+s.done||0)+1}});
@@ -128,7 +129,7 @@ function startWorkout(){sync();
 function saveWorkout(){sync();const w=D.workouts.find(x=>x.id===scr.id);
  dr.ids.filter(i=>!dr.orig.includes(i)).forEach(i=>{const s=st(i);if(s)s.done=(+s.done||0)+1});
  dr.orig.filter(i=>!dr.ids.includes(i)).forEach(i=>{const s=st(i);if(s)s.done=Math.max(0,(+s.done||0)-1)});
- Object.assign(w,{date:dr.date,name:dr.name.trim(),ids:dr.ids});save();go('workouts')}
+ Object.assign(w,{date:dr.date,name:dr.name.trim(),ids:dr.ids});save();go('workout',w.id)}
 function backup(){$('#mb').innerHTML='<h3>Резервная копия</h3><textarea id="bt" readonly style="min-height:110px;font-style:normal">'+esc(JSON.stringify(D))+'</textarea><div class="two"><button class="btn out" id="bc">Скопировать</button></div><p class="sub" style="margin:14px 0 6px">Восстановление: вставьте сохранённый текст</p><textarea id="br" style="min-height:80px;font-style:normal"></textarea><div class="two"><button class="btn out" id="bx">Закрыть</button><button class="btn sv" id="bo">Восстановить</button></div>';
  $('#m').style.display='flex';$('#bx').onclick=closeM;
  $('#bc').onclick=()=>{const t=$('#bt');t.select();t.setSelectionRange(0,999999);try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}toast('Скопировано')};
@@ -140,10 +141,11 @@ document.addEventListener('click',e=>{const t=e.target,c=s=>t.closest(s);let x;
  if(x=c('[data-s]'))return go('student',x.dataset.s);
  if(x=c('[data-w]'))return go('workout',x.dataset.w);
  if(x=c('[data-rm]')){sync();dr.ids=dr.ids.filter(i=>i!==x.dataset.rm);render();return}
- if(c('#ph')){sync();$('#file').click();return}
+ if(c('#ph')&&scr.edit){sync();$('#file').click();return}
  if(c('#add'))return pick();
  if(c('#bkp'))return backup();
- if(c('#cx')){const back=scr.n==='student'?'students':'workouts';ask('Отменить изменения?','Да, отменить','Продолжить',()=>go(back));return}
+ if(c('#cx')){const n=scr.n,id=scr.id;ask('Отменить изменения?','Да, отменить','Продолжить',()=>id?go(n,id):go(n==='student'?'students':'workouts'));return}
+ if(c('#ed')){scr.edit=true;render();return}
  if(c('#ok'))return scr.n==='student'?saveStudent():scr.id?saveWorkout():startWorkout();
  if(c('#sdel'))return ask('Удалить ученика?','Удалить','Отмена',()=>{D.students=D.students.filter(s=>s.id!==scr.id);D.workouts.forEach(w=>w.ids=w.ids.filter(i=>i!==scr.id));save();go('students')});
  if(c('#wdel'))return ask('Удалить тренировку? Счётчики учеников вернутся назад.','Удалить','Отмена',()=>{const w=D.workouts.find(x=>x.id===scr.id);w.ids.forEach(i=>{const s=st(i);if(s)s.done=Math.max(0,(+s.done||0)-1)});D.workouts=D.workouts.filter(x=>x.id!==scr.id);save();go('workouts')})});
