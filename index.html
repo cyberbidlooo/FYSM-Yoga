@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="FYSM">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="theme-color" content="#000000">
+<title>Людмила FYSM</title>
+<style>
+:root{color-scheme:light;--g:#66d44b;--b:#74b9ff;--o:#ffa876;--t:#f3f3f3;--l:#e4e4e4;--tx:#444;--mu:#9a9a9a;--sat:env(safe-area-inset-top,0px);--sab:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#fff;color:var(--tx);font:17px/1.35 -apple-system,system-ui,"Segoe UI",Roboto,sans-serif}
+header{position:fixed;top:0;left:0;right:0;z-index:3;background:#000;color:#fff;text-align:center;font-weight:600;padding:calc(var(--sat) + 12px) 16px 12px}
+header button{position:absolute;left:8px;bottom:6px;background:none;border:0;color:#fff;font-size:24px;padding:4px 10px}
+main{max-width:480px;margin:0 auto;padding:calc(var(--sat) + 62px) 16px 190px}
+.tile{display:flex;align-items:center;gap:12px;background:var(--t);border:1px solid var(--l);border-radius:14px;padding:9px 12px;margin-bottom:10px;min-height:46px}
+.tile.tap:active{background:var(--l)}
+.av{width:34px;height:34px;border-radius:50%;background:#d7d7d7;overflow:hidden;flex:none}
+.av img,.av svg{width:100%;height:100%;object-fit:cover;display:block}
+.grow{flex:1;min-width:0}.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sub{font-size:14px;color:var(--mu)}
+.badge{min-width:24px;height:24px;border-radius:12px;background:var(--b);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 6px}
+.badge.low{background:var(--o)}
+.big{width:96px;height:96px;margin:6px auto 14px;display:block;border:0;padding:0;border-radius:50%;background:#d7d7d7;overflow:hidden}
+.big img,.big svg{width:100%;height:100%;object-fit:cover;display:block}
+.line{width:100%;border:0;border-bottom:1px solid var(--l);text-align:center;font:inherit;font-size:19px;color:var(--tx);padding:8px;margin-bottom:12px;background:none;outline:none}
+.line::placeholder{color:#b9b9b9}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px;background:var(--t);border:1px solid var(--l);border-radius:10px;padding:10px 12px;margin-bottom:10px;font-size:14px}
+.row input{border:0;background:none;font:inherit;font-size:14px;text-align:right;color:var(--tx);max-width:55%;outline:none}
+.row.bl{background:var(--b);border-color:var(--b);color:#fff;font-weight:600}.row.or{background:var(--o);border-color:var(--o);color:#fff;font-weight:600}
+.row.bl input,.row.or input{color:#fff;width:60px}
+textarea{width:100%;min-height:100px;border:1px solid var(--l);background:var(--t);border-radius:10px;padding:10px 12px;font:italic 14px/1.4 inherit;color:var(--tx);outline:none;resize:vertical}
+.pill{display:block;width:100%;text-align:center;background:#000;color:#fff;font-size:22px;font-weight:600;padding:18px;border-radius:40px;margin:4px 0 12px;position:relative;overflow:hidden}
+.pill.old{background:#d7d7d7;color:var(--tx);border:1px solid #bbb}
+.pill input{position:absolute;inset:0;opacity:0;width:100%}
+.foot{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--l);padding:16px 16px calc(var(--sab) + 14px);z-index:2}
+.foot>div{max-width:480px;margin:0 auto}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border-radius:30px;padding:14px;font:inherit;font-weight:500;border:2px solid transparent;color:#fff;background:var(--g)}
+.btn.out{background:#fff;color:#999;border-color:#bbb}
+.two{display:flex;gap:10px;margin-top:10px}.two .btn{flex:1}.two .sv{flex:1.25}
+.tb{background:#fff}.tb.s.on{background:var(--b);color:#fff;border-color:var(--b)}.tb.s{color:var(--b);border-color:var(--b)}
+.tb.w{color:var(--o);border-color:var(--o)}.tb.w.on{background:var(--o);color:#fff}
+.plus{width:44px;height:44px;border-radius:50%;border:0;background:var(--b);color:#fff;font-size:30px;line-height:1;display:block;margin:16px auto}
+.x{border:0;background:none;color:#999;font-size:22px;padding:4px 6px}
+.lk{display:block;margin:18px auto 0;background:none;border:0;color:var(--mu);font:inherit;font-size:14px;padding:8px}
+.lk.d{color:#d6503f}
+.empty{color:var(--mu);text-align:center;padding:48px 10px}
+#m{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}
+#m>div{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 16px calc(var(--sab) + 16px);max-height:85%;overflow:auto}
+#m h3{margin:0 0 14px;font-size:18px;text-align:center}
+.tile.on{border-color:var(--g);background:#eaf9e5}
+#toast{position:fixed;left:50%;bottom:calc(var(--sab) + 190px);transform:translateX(-50%);background:#333;color:#fff;padding:10px 16px;border-radius:30px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;max-width:90%;text-align:center}
+#toast.on{opacity:1}
+</style>
+</head>
+<body>
+<header><button id="bk" hidden>←</button>Людмила FYSM</header>
+<main id="main"></main>
+<div class="foot" id="foot"></div>
+<div id="m"><div id="mb"></div></div>
+<div id="toast"></div>
+<input type="file" id="file" accept="image/*" hidden>
+<script>
+const KEY='fysm-v1';
+let D={students:[],workouts:[]},scr={n:'students'},dr=null;
+try{const r=localStorage.getItem(KEY);if(r)D=JSON.parse(r)}catch(e){}
+const $=s=>document.querySelector(s),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const p2=n=>String(n).padStart(2,'0'),today=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
+const fmt=s=>s?s.split('-').reverse().join('.'):'';
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){toast('Не удалось сохранить данные')}};
+const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2600)};
+const st=id=>D.students.find(s=>s.id===id),rem=s=>Math.max(0,(+s.total||0)-(+s.done||0));
+const SIL='<svg viewBox="0 0 40 40"><circle cx="20" cy="15" r="7" fill="#a9a9a9"/><path d="M5 40c0-9 7-14 15-14s15 5 15 14z" fill="#a9a9a9"/></svg>';
+const av=s=>'<div class="av">'+(s&&s.photo?'<img src="'+s.photo+'" alt="">':SIL)+'</div>';
+function ask(text,yes,no,cb){$('#mb').innerHTML='<h3>'+esc(text)+'</h3><button class="btn" id="y">'+esc(yes)+'</button><div class="two"><button class="btn out" id="n" style="flex:1">'+esc(no)+'</button></div>';$('#m').style.display='flex';$('#n').onclick=closeM;$('#y').onclick=()=>{closeM();cb()}}
+const closeM=()=>{$('#m').style.display='none'};
+$('#m').onclick=e=>{if(e.target.id==='m')closeM()};
+function sync(){if(!dr)return;const g=i=>{const e=document.getElementById(i);return e?e.value:undefined};
+ if(scr.n==='student'){['name','phone','start','end','total','done','note'].forEach(k=>{const v=g('f-'+k);if(v!==undefined)dr[k]=v})}
+ if(scr.n==='workout'){const v=g('f-name');if(v!==undefined)dr.name=v;const d=g('f-date');if(d)dr.date=d}}
+function go(n,id){scr={n,id};dr=null;
+ if(n==='student'){const s=id&&st(id);dr=s?{...s}:{name:'',phone:'',start:today(),end:'',total:'',done:0,note:'',photo:''}}
+ if(n==='workout'){const w=id&&D.workouts.find(x=>x.id===id);dr=w?{...w,ids:[...w.ids],orig:[...w.ids]}:{date:today(),name:'',ids:[],orig:[]}}
+ render();scrollTo(0,0)}
+function render(){
+ const n=scr.n,sub=n==='student'||n==='workout',M=$('#main'),F=$('#foot');
+ $('#bk').hidden=!sub;let h='',f='';
+ const tabs=a=>'<div class="two"><button class="btn tb s '+(a==='s'?'on':'')+'" data-go="students">Ученики</button><button class="btn tb w '+(a==='w'?'on':'')+'" data-go="workouts">Тренировки</button></div>';
+ if(n==='students'){
+  h=D.students.length?[...D.students].sort((a,b)=>a.name.localeCompare(b.name,'ru')).map(s=>'<div class="tile tap" data-s="'+s.id+'">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div><div class="badge'+(rem(s)<=1?' low':'')+'">'+rem(s)+'</div></div>').join(''):'<div class="empty">Учеников пока нет.<br>Нажмите «Добавить ученика».</div>';
+  h+='<button class="lk" id="bkp">Резервная копия данных</button>';
+  f='<button class="btn" data-go="newstudent"><span style="font-size:24px">⊕</span>Добавить ученика</button>'+tabs('s')}
+ if(n==='workouts'){
+  h=D.workouts.length?[...D.workouts].sort((a,b)=>a.date<b.date?1:-1).map(w=>'<div class="tile tap" data-w="'+w.id+'"><div class="grow"><div class="nm" style="font-weight:600">'+fmt(w.date)+'</div>'+(w.name?'<div class="sub nm">'+esc(w.name)+'</div>':'')+'</div><div class="sub">'+w.ids.length+' уч.</div></div>').join(''):'<div class="empty">Тренировок пока нет.<br>Нажмите «Новая тренировка».</div>';
+  f='<button class="btn" data-go="newworkout"><span style="font-size:24px">⊕</span>Новая тренировка</button>'+tabs('w')}
+ if(n==='student'){
+  const isNew=!scr.id,r=Math.max(0,(+dr.total||0)-(+dr.done||0));
+  h='<button class="big" id="ph">'+(dr.photo?'<img src="'+dr.photo+'" alt="">':SIL)+'</button><input class="line" id="f-name" placeholder="Имя" value="'+esc(dr.name)+'" autocomplete="off"><input class="line" id="f-phone" type="tel" placeholder="Номер телефона" value="'+esc(dr.phone)+'">'
+  +'<label class="row">Открыт<input id="f-start" type="date" value="'+esc(dr.start)+'"></label><label class="row">Заканчивается<input id="f-end" type="date" value="'+esc(dr.end)+'"></label><label class="row">Кол-во тренировок в абонементе<input id="f-total" type="number" inputmode="numeric" min="0" value="'+esc(dr.total)+'"></label>'
+  +(isNew?'':'<div class="row bl">Осталось<span id="r-rem">'+r+'</span></div><div class="row or">Пройдено<input id="f-done" type="number" inputmode="numeric" min="0" value="'+esc(dr.done)+'"></div>')
+  +'<textarea id="f-note" placeholder="Место для заметок">'+esc(dr.note)+'</textarea>'+(isNew?'':'<button class="lk d" id="sdel">Удалить ученика</button>');
+  f='<div class="two" style="margin:0"><button class="btn sv" id="ok">Сохранить</button><button class="btn out" id="cx">Отменить</button></div>'}
+ if(n==='workout'){
+  const isNew=!scr.id;
+  h='<label class="pill'+(isNew?'':' old')+'">'+fmt(dr.date)+'<input id="f-date" type="date" value="'+dr.date+'"></label><input class="line" id="f-name" style="font-size:16px" placeholder="Название тренировки" value="'+esc(dr.name)+'" autocomplete="off">'
+  +dr.ids.map(i=>{const s=st(i);return s?'<div class="tile">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div><button class="x" data-rm="'+i+'">✕</button></div>':''}).join('')
+  +'<button class="plus" id="add">+</button>'+(isNew?'':'<button class="lk d" id="wdel">Удалить тренировку</button>');
+  f='<button class="btn" id="ok">'+(isNew?'Начать':'Сохранить')+'</button><div class="two"><button class="btn out" id="cx">Отменить</button></div>'}
+ M.innerHTML=h;F.innerHTML='<div>'+f+'</div>'}
+function pick(){sync();const free=D.students.filter(s=>!dr.ids.includes(s.id));
+ if(!free.length){toast(D.students.length?'Все ученики уже добавлены':'Сначала добавьте учеников');return}
+ const sel=new Set();
+ $('#mb').innerHTML='<h3>Добавить учеников</h3>'+free.map(s=>'<div class="tile tap" data-pk="'+s.id+'">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div><div class="badge">'+rem(s)+'</div></div>').join('')+'<button class="btn" id="pd">Готово</button>';
+ $('#m').style.display='flex';
+ $('#mb').onclick=e=>{const t=e.target.closest('[data-pk]');if(t){const i=t.dataset.pk;sel.has(i)?sel.delete(i):sel.add(i);t.classList.toggle('on')}if(e.target.id==='pd'){dr.ids.push(...free.filter(s=>sel.has(s.id)).map(s=>s.id));closeM();render()}}}
+function saveStudent(){sync();if(!dr.name.trim()){toast('Введите имя ученика');return}
+ const v={...dr,name:dr.name.trim(),phone:dr.phone.trim(),total:+dr.total||0,done:+dr.done||0};
+ if(scr.id)Object.assign(st(scr.id),v);else D.students.push({id:uid(),...v});
+ save();go('students')}
+function startWorkout(){sync();
+ if(!dr.ids.length){toast('Добавьте хотя бы одного ученика');return}
+ const out=[];dr.ids.forEach(i=>{const s=st(i);if(s){if(rem(s)<=0)out.push(s.name);s.done=(+s.done||0)+1}});
+ D.workouts.push({id:uid(),date:dr.date,name:dr.name.trim(),ids:dr.ids});save();go('workouts');
+ toast(out.length?'Абонемент закончился: '+out.join(', '):'Тренировка проведена, счётчики обновлены')}
+function saveWorkout(){sync();const w=D.workouts.find(x=>x.id===scr.id);
+ dr.ids.filter(i=>!dr.orig.includes(i)).forEach(i=>{const s=st(i);if(s)s.done=(+s.done||0)+1});
+ dr.orig.filter(i=>!dr.ids.includes(i)).forEach(i=>{const s=st(i);if(s)s.done=Math.max(0,(+s.done||0)-1)});
+ Object.assign(w,{date:dr.date,name:dr.name.trim(),ids:dr.ids});save();go('workouts')}
+function backup(){$('#mb').innerHTML='<h3>Резервная копия</h3><textarea id="bt" readonly style="min-height:110px;font-style:normal">'+esc(JSON.stringify(D))+'</textarea><div class="two"><button class="btn out" id="bc">Скопировать</button></div><p class="sub" style="margin:14px 0 6px">Восстановление: вставьте сохранённый текст</p><textarea id="br" style="min-height:80px;font-style:normal"></textarea><div class="two"><button class="btn out" id="bx">Закрыть</button><button class="btn sv" id="bo">Восстановить</button></div>';
+ $('#m').style.display='flex';$('#bx').onclick=closeM;
+ $('#bc').onclick=()=>{const t=$('#bt');t.select();t.setSelectionRange(0,999999);try{navigator.clipboard.writeText(t.value)}catch(e){document.execCommand('copy')}toast('Скопировано')};
+ $('#bo').onclick=()=>{try{const d=JSON.parse($('#br').value);if(!Array.isArray(d.students)||!Array.isArray(d.workouts))throw 0;
+  ask('Заменить текущие данные?','Заменить','Отмена',()=>{D=d;save();go('students');toast('Данные восстановлены')})}catch(e){toast('Текст не похож на копию данных')}}}
+document.addEventListener('click',e=>{const t=e.target,c=s=>t.closest(s);let x;
+ if(c('#bk')){x=scr.n;sync();ask('Выйти без сохранения?','Выйти','Остаться',()=>go(x==='student'?'students':'workouts'));return}
+ if(x=c('[data-go]')){const g=x.dataset.go;g==='newstudent'?go('student'):g==='newworkout'?go('workout'):go(g);return}
+ if(x=c('[data-s]'))return go('student',x.dataset.s);
+ if(x=c('[data-w]'))return go('workout',x.dataset.w);
+ if(x=c('[data-rm]')){sync();dr.ids=dr.ids.filter(i=>i!==x.dataset.rm);render();return}
+ if(c('#ph')){sync();$('#file').click();return}
+ if(c('#add'))return pick();
+ if(c('#bkp'))return backup();
+ if(c('#cx')){const back=scr.n==='student'?'students':'workouts';ask('Отменить изменения?','Да, отменить','Продолжить',()=>go(back));return}
+ if(c('#ok'))return scr.n==='student'?saveStudent():scr.id?saveWorkout():startWorkout();
+ if(c('#sdel'))return ask('Удалить ученика?','Удалить','Отмена',()=>{D.students=D.students.filter(s=>s.id!==scr.id);D.workouts.forEach(w=>w.ids=w.ids.filter(i=>i!==scr.id));save();go('students')});
+ if(c('#wdel'))return ask('Удалить тренировку? Счётчики учеников вернутся назад.','Удалить','Отмена',()=>{const w=D.workouts.find(x=>x.id===scr.id);w.ids.forEach(i=>{const s=st(i);if(s)s.done=Math.max(0,(+s.done||0)-1)});D.workouts=D.workouts.filter(x=>x.id!==scr.id);save();go('workouts')})});
+document.addEventListener('input',e=>{if(e.target.id==='f-total'||e.target.id==='f-done'){const r=$('#r-rem');if(r)r.textContent=Math.max(0,(+$('#f-total').value||0)-(+$('#f-done').value||0))}});
+document.addEventListener('change',e=>{if(e.target.id==='f-date'){sync();render()}});
+$('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);
+ im.onload=()=>{const k=256/Math.min(im.width,im.height),w=im.width*k,h=im.height*k,c=document.createElement('canvas');c.width=c.height=256;
+  c.getContext('2d').drawImage(im,(256-w)/2,(256-h)/2,w,h);dr.photo=c.toDataURL('image/jpeg',.8);URL.revokeObjectURL(u);e.target.value='';render()};im.src=u};
+render();
+</script>
+</body>
+</html>
