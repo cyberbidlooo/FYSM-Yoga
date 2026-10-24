@@ -23,7 +23,7 @@ main{max-width:480px;margin:0 auto;padding:calc(var(--sat) + 62px) 16px 190px}
 .grow{flex:1;min-width:0}.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.sub{font-size:14px;color:var(--mu)}
 .badge{min-width:24px;height:24px;border-radius:12px;background:var(--b);color:#fff;font-size:14px;font-weight:600;display:flex;align-items:center;justify-content:center;padding:0 6px}
 .badge.low{background:var(--o)}
-.big{width:96px;height:96px;margin:6px auto 14px;display:block;border:0;padding:0;border-radius:50%;background:#d7d7d7;overflow:hidden}
+.big{width:72px;height:72px;margin:4px auto 14px;display:block;border:0;padding:0;border-radius:50%;background:#d7d7d7;overflow:hidden}
 .big img,.big svg{width:100%;height:100%;object-fit:cover;display:block}
 .line{width:100%;border:0;border-bottom:1px solid var(--l);text-align:center;font:inherit;font-size:19px;color:var(--tx);padding:8px;margin-bottom:12px;background:none;outline:none}
 .line::placeholder{color:#b9b9b9}
@@ -46,7 +46,7 @@ textarea{width:100%;min-height:100px;border:1px solid var(--l);background:var(--
 .x{border:0;background:none;color:#999;font-size:22px;padding:4px 6px}
 .lk{display:block;margin:18px auto 0;background:none;border:0;color:var(--mu);font:inherit;font-size:14px;padding:8px}
 .lk.d{color:#d6503f}
-.big:disabled{opacity:1}input:disabled,textarea:disabled{opacity:1;-webkit-text-fill-color:currentColor}
+.view .line{border-bottom:0;padding:3px 0;margin:0 0 4px}.view #f-phone{margin-bottom:22px}.view .row:not(.bl):not(.or){background:#fff}.big:disabled{opacity:1}input:disabled,textarea:disabled{opacity:1;-webkit-text-fill-color:currentColor}
 .empty{color:var(--mu);text-align:center;padding:48px 10px}
 #m{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:flex-end;justify-content:center;z-index:9}
 #m>div{background:#fff;width:100%;max-width:480px;border-radius:20px 20px 0 0;padding:20px 16px calc(var(--sab) + 16px);max-height:85%;overflow:auto}
@@ -110,7 +110,7 @@ function render(){
   +dr.ids.map(i=>{const s=st(i);return s?'<div class="tile">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div>'+(ro?'':'<button class="x" data-rm="'+i+'">✕</button>')+'</div>':''}).join('')
   +(ro?'':'<button class="plus" id="add">+</button>'+(isNew?'':'<button class="lk d" id="wdel">Удалить тренировку</button>'));
   f=ro?'<button class="btn" id="ed">Редактировать</button>':'<button class="btn" id="ok">'+(isNew?'Начать':'Сохранить')+'</button><div class="two"><button class="btn out" id="cx">Отменить</button></div>'}
- M.innerHTML=h;F.innerHTML='<div>'+f+'</div>'}
+ M.innerHTML=h;M.className=(n==='student'&&ro)?'view':'';F.innerHTML='<div>'+f+'</div>'}
 function pick(){sync();const free=D.students.filter(s=>!dr.ids.includes(s.id));
  if(!free.length){toast(D.students.length?'Все ученики уже добавлены':'Сначала добавьте учеников');return}
  const sel=new Set();
