@@ -135,7 +135,7 @@ function backup(){$('#mb').innerHTML='<h3>Резервная копия</h3><tex
  $('#bo').onclick=()=>{try{const d=JSON.parse($('#br').value);if(!Array.isArray(d.students)||!Array.isArray(d.workouts))throw 0;
   ask('Заменить текущие данные?','Заменить','Отмена',()=>{D=d;save();go('students');toast('Данные восстановлены')})}catch(e){toast('Текст не похож на копию данных')}}}
 document.addEventListener('click',e=>{const t=e.target,c=s=>t.closest(s);let x;
- if(c('#bk')){x=scr.n;sync();ask('Выйти без сохранения?','Выйти','Остаться',()=>go(x==='student'?'students':'workouts'));return}
+ if(c('#bk')){go(scr.n==='student'?'students':'workouts');return}
  if(x=c('[data-go]')){const g=x.dataset.go;g==='newstudent'?go('student'):g==='newworkout'?go('workout'):go(g);return}
  if(x=c('[data-s]'))return go('student',x.dataset.s);
  if(x=c('[data-w]'))return go('workout',x.dataset.w);
