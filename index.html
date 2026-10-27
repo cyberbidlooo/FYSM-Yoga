@@ -110,6 +110,9 @@ function render(){
   +dr.ids.map(i=>{const s=st(i);return s?'<div class="tile">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div>'+(ro?'':'<button class="x" data-rm="'+i+'">✕</button>')+'</div>':''}).join('')
   +(ro?'':'<button class="plus" id="add">+</button>'+(isNew?'':'<button class="lk d" id="wdel">Удалить тренировку</button>'));
   f=ro?'<button class="btn" id="ed">Редактировать</button>':'<button class="btn" id="ok">'+(isNew?'Начать':'Сохранить')+'</button><div class="two"><button class="btn out" id="cx">Отменить</button></div>'}
+ if(n==='loading'){h='<div class="empty">Загрузка…</div>';f=''}
+ if(n==='login'){h='<h2 style="text-align:center;margin:30px 0 18px;font-size:20px">Вход</h2><input class="line" id="em" type="email" placeholder="Почта" autocomplete="username"><input class="line" id="pw" type="password" placeholder="Пароль" autocomplete="current-password"><div id="lerr" class="sub" style="text-align:center;color:#d6503f;min-height:22px"></div>';f='<button class="btn" id="li">Войти</button>'}
+ F.style.display=f?'':'none';
  M.innerHTML=h;M.className=(n==='student'&&ro)?'view':'';F.innerHTML='<div>'+f+'</div>'}
 function pick(){sync();const free=D.students.filter(s=>!dr.ids.includes(s.id));
  if(!free.length){toast(D.students.length?'Все ученики уже добавлены':'Сначала добавьте учеников');return}
