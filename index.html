@@ -65,13 +65,13 @@ textarea{width:100%;min-height:100px;border:1px solid var(--l);background:var(--
 <input type="file" id="file" accept="image/*" hidden>
 <script>
 const KEY='fysm-v1';
-let D={students:[],workouts:[]},scr={n:'students'},dr=null;
+let D={students:[],workouts:[]},scr={n:'loading'},dr=null;
 try{const r=localStorage.getItem(KEY);if(r)D=JSON.parse(r)}catch(e){}
 const $=s=>document.querySelector(s),uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,5);
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const p2=n=>String(n).padStart(2,'0'),today=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
 const fmt=s=>s?s.split('-').reverse().join('.'):'';
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){toast('Не удалось сохранить данные')}};
+const save=()=>{try{window.cloud&&window.cloud.push()}catch(e){toast('Не удалось сохранить в облако')}};
 const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');setTimeout(()=>e.classList.remove('on'),2600)};
 const st=id=>D.students.find(s=>s.id===id),rem=s=>Math.max(0,(+s.total||0)-(+s.done||0));
 const SIL='<svg viewBox="0 0 40 40"><circle cx="20" cy="15" r="7" fill="#a9a9a9"/><path d="M5 40c0-9 7-14 15-14s15 5 15 14z" fill="#a9a9a9"/></svg>';
@@ -92,7 +92,7 @@ function render(){
  const tabs=a=>'<div class="two"><button class="btn tb s '+(a==='s'?'on':'')+'" data-go="students">Ученики</button><button class="btn tb w '+(a==='w'?'on':'')+'" data-go="workouts">Тренировки</button></div>';
  if(n==='students'){
   h=D.students.length?[...D.students].sort((a,b)=>a.name.localeCompare(b.name,'ru')).map(s=>'<div class="tile tap" data-s="'+s.id+'">'+av(s)+'<div class="grow nm">'+esc(s.name)+'</div><div class="badge'+(rem(s)<=1?' low':'')+'">'+rem(s)+'</div></div>').join(''):'<div class="empty">Учеников пока нет.<br>Нажмите «Добавить ученика».</div>';
-  h+='<button class="lk" id="bkp">Резервная копия данных</button>';
+  h+='<button class="lk" id="bkp">Резервная копия данных</button><button class="lk" id="lo">Выйти из аккаунта</button>';
   f='<button class="btn" data-go="newstudent"><span style="font-size:24px">⊕</span>Добавить ученика</button>'+tabs('s')}
  if(n==='workouts'){
   h=D.workouts.length?[...D.workouts].sort((a,b)=>a.date<b.date?1:-1).map(w=>'<div class="tile tap" data-w="'+w.id+'"><div class="grow"><div class="nm" style="font-weight:600">'+fmt(w.date)+'</div>'+(w.name?'<div class="sub nm">'+esc(w.name)+'</div>':'')+'</div><div class="sub">'+w.ids.length+' уч.</div></div>').join(''):'<div class="empty">Тренировок пока нет.<br>Нажмите «Новая тренировка».</div>';
@@ -157,7 +157,66 @@ document.addEventListener('change',e=>{if(e.target.id==='f-date'){sync();render(
 $('#file').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image(),u=URL.createObjectURL(f);
  im.onload=()=>{const k=256/Math.min(im.width,im.height),w=im.width*k,h=im.height*k,c=document.createElement('canvas');c.width=c.height=256;
   c.getContext('2d').drawImage(im,(256-w)/2,(256-h)/2,w,h);dr.photo=c.toDataURL('image/jpeg',.8);URL.revokeObjectURL(u);e.target.value='';render()};im.src=u};
+const getD=()=>D,clearD=()=>{D={students:[],workouts:[]}};
+function setScr(n){scr={n};dr=null;render()}
+function applyCloud(s,w){D={students:s,workouts:w};if(scr.n==='loading'||scr.n==='login')go('students');else if(!scr.edit||scr.n==='students'||scr.n==='workouts')render()}
+setTimeout(()=>{if(scr.n==='loading'){setScr('login');const e=$('#lerr');if(e)e.textContent='Не удалось подключиться к облаку. Проверьте интернет.'}},10000);
 render();
 </script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {initializeFirestore,persistentLocalCache,collection,doc,setDoc,deleteDoc,onSnapshot,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyAZBE_VviGHvcZCgYsuRnNHwRgiwua0bcI",authDomain:"fysm-yoga-5c706.firebaseapp.com",projectId:"fysm-yoga-5c706",storageBucket:"fysm-yoga-5c706.firebasestorage.app",messagingSenderId:"881942893349",appId:"1:881942893349:web:f99f8a64e4feaf488800cc"});
+const auth=getAuth(app),db=initializeFirestore(app,{localCache:persistentLocalCache({})});
+let uid=null,unsub=[],last={s:{},w:{}};
+const COLS=[['s','students'],['w','workouts']];
+const fail=e=>toast(e&&e.code==='permission-denied'?'Нет доступа к данным: проверьте правила Firestore':'Не удалось сохранить в облако');
+function push(){
+ if(!uid)return;const D=getD();
+ COLS.forEach(([k,col])=>{
+  const list=D[col],seen=new Set();
+  list.forEach(r=>{seen.add(r.id);const j=JSON.stringify(r);if(last[k][r.id]!==j){last[k][r.id]=j;setDoc(doc(db,'users',uid,col,r.id),r).catch(fail)}});
+  Object.keys(last[k]).forEach(id=>{if(!seen.has(id)){delete last[k][id];deleteDoc(doc(db,'users',uid,col,id)).catch(fail)}});
+ });
+}
+async function migrate(){
+ const flag='fysm-mig-'+uid;let done=null;
+ try{done=localStorage.getItem(flag)}catch(e){}
+ if(done)return;
+ const [a,b]=await Promise.all(COLS.map(([k,c])=>getDocs(collection(db,'users',uid,c))));
+ const D=getD();
+ if(a.empty&&b.empty&&(D.students.length||D.workouts.length)){push();toast('Данные перенесены в облако')}
+ try{localStorage.setItem(flag,'1')}catch(e){}
+}
+function listen(){
+ const got={s:null,w:null};
+ COLS.forEach(([k,col])=>unsub.push(onSnapshot(collection(db,'users',uid,col),snap=>{
+  const arr=snap.docs.map(d=>d.data());last[k]={};arr.forEach(r=>last[k][r.id]=JSON.stringify(r));got[k]=arr;
+  if(got.s&&got.w)applyCloud(got.s,got.w);
+ },fail)));
+}
+onAuthStateChanged(auth,async u=>{
+ unsub.forEach(f=>f());unsub=[];last={s:{},w:{}};
+ if(!u){uid=null;window.cloud=null;setScr('login');return}
+ uid=u.uid;window.cloud={push};
+ try{await migrate()}catch(e){}
+ listen();
+});
+const ERR={'auth/invalid-credential':'Неверная почта или пароль','auth/invalid-email':'Некорректная почта','auth/missing-password':'Введите пароль','auth/network-request-failed':'Нет связи с интернетом','auth/too-many-requests':'Слишком много попыток, подождите немного','auth/unauthorized-domain':'Адрес приложения не добавлен в Authorized domains'};
+async function doLogin(){
+ const em=$('#em').value.trim(),pw=$('#pw').value,er=$('#lerr'),b=$('#li');
+ if(!em||!pw){er.textContent='Введите почту и пароль';return}
+ b.disabled=true;er.textContent='';
+ try{await signInWithEmailAndPassword(auth,em,pw)}
+ catch(e){er.textContent=ERR[e.code]||('Ошибка входа: '+e.code);b.disabled=false}
+}
+document.addEventListener('click',e=>{
+ if(e.target.closest('#li'))doLogin();
+ if(e.target.closest('#lo'))ask('Выйти из аккаунта?','Выйти','Остаться',async()=>{await signOut(auth);clearD()});
+});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'&&e.target.id==='pw')doLogin()});
+</script>
+
 </body>
 </html>
